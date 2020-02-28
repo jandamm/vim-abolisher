@@ -1,4 +1,5 @@
 struct Abolisher {
+	let input: String
 	let pattern: Part
 	let replace: Part
 
@@ -8,6 +9,7 @@ struct Abolisher {
 	}
 
 	enum Error: Swift.Error {
-		case malformatted
+		case replaceMissing
+		case missingClosingBracket
 	}
 }
