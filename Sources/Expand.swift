@@ -1,62 +1,65 @@
-func concat(_ first: (Substring, Substring), _ rest: [(Substring, Substring)]) -> [(Substring, Substring)] {
-	if rest.isEmpty {
-		return [first]
-	}
-	return rest.map { this in
-		(
-			first.0 + this.0,
-			first.1 + this.1
-		)
-	}
+func combine(_ first: (Substring, Substring), _ rest: [(Substring, Substring)]) -> [(Substring, Substring)] {
+	rest.isEmpty
+		? [first]
+		: rest.map { this in
+			(
+				first.0 + this.0,
+				first.1 + this.1
+			)
+		}
 }
 
 extension StringProtocol {
 	func capitalized() -> String {
-		return first.map { $0.uppercased() + self.dropFirst() } ?? ""
+		first.map { $0.uppercased() + self.dropFirst() } ?? ""
 	}
 }
 
-let iabbr = "iabbrev"
 func expand(abolisher: Abolisher) -> [String] {
-	return expand(pattern: abolisher.pattern, replace: abolisher.replace)
-		.flatMap { abolish -> [String] in
-			let pattern = abolish.0
-			let replace = abolish.1
-			return [
-				"\(iabbr) \(pattern) \(replace)",
-				"\(iabbr) \(pattern.capitalized()) \(replace.capitalized())",
-				"\(iabbr) \(pattern.uppercased()) \(replace.uppercased())",
-				"",
-			]
-		}
+	expand(pattern: abolisher.pattern, replace: abolisher.replace)
+		.flatMap(getVariations)
 }
 
 func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, Substring)] {
-	guard let pattern = pattern, let replace = replace else {
+	guard let pattern = pattern,
+		let replace = replace else {
 		return []
 	}
+
 	switch (pattern, replace) {
-	case let (.part(p, nextP), .part(r, nextR)):
-		return concat((p, r), expand(pattern: nextP, replace: nextR))
+	case let (.part(pattern, nextPattern), .part(replace, nextReplace)):
+		return combine((pattern, replace), expand(pattern: nextPattern, replace: nextReplace))
 
-	case let (.part(p, nextP), .option):
-		return concat((p, ""), expand(pattern: nextP, replace: replace))
+	case let (.part(pattern, nextPattern), .option):
+		return combine((pattern, ""), expand(pattern: nextPattern, replace: replace))
 
-	case let (.option, .part(r, nextR)):
-		return concat(("", r), expand(pattern: pattern, replace: nextR))
+	case let (.option, .part(replace, nextReplace)):
+		return combine(("", replace), expand(pattern: pattern, replace: nextReplace))
 
-	case let (.option(ps, nextP), .option(rs, nextR)):
+	case let (.option(patterns, nextPattern), .option(replaces, nextReplace)):
 		let opt: [Substring]
-		if rs == [""] {
-			opt = ps
-		} else if let f = rs.first, rs.count == 1 {
-			opt = Array(repeating: f, count: ps.count)
+		if replaces == [""] {
+			opt = patterns
+		} else if let onlyReplace = replaces.first, replaces.count == 1 {
+			opt = Array(repeating: onlyReplace, count: patterns.count)
 		} else {
-			opt = rs
+			opt = replaces
 		}
 
-		return zip(ps, opt).flatMap { (p, r) -> [(Substring, Substring)] in
-			concat((p, r), expand(pattern: nextP, replace: nextR))
-		}
+		return zip(patterns, opt)
+			.flatMap { (pattern, replace) -> [(Substring, Substring)] in
+				combine((pattern, replace), expand(pattern: nextPattern, replace: nextReplace))
+			}
 	}
+}
+
+func getVariations(_ parts: (Substring, Substring)) -> [String] {
+	let pattern = parts.0
+	let replace = parts.1
+	return [
+		"iabbrev \(pattern) \(replace)",
+		"iabbrev \(pattern.capitalized()) \(replace.capitalized())",
+		"iabbrev \(pattern.uppercased()) \(replace.uppercased())",
+		"",
+	]
 }
