@@ -1,26 +1,25 @@
-func parseLine(_ line: String) throws -> Abolish? {
-	// Expect: "Abolish som{e,a} not{a,}
+func parseLine(_ line: String) throws -> Abolisher? {
 	guard line.hasPrefix("Abolish ") else { return nil }
 	let parts = line.split(separator: " ")
 
-	guard parts.count >= 3 else { throw AbolishError.malformatted }
+	guard parts.count >= 3 else { throw Abolisher.Error.malformatted }
 	let pattern = parts[1]
 	let replace = parts[2]
 
-	return Abolish(
+	return Abolisher(
 		pattern: try parsePart(pattern),
 		replace: try parsePart(replace)
 	)
 }
 
-func parsePart(_ part: Substring) throws -> Part {
+func parsePart(_ part: Substring) throws -> Abolisher.Part {
 	guard let nextOption = part.firstIndex(of: "{") else {
 		return .part(part, next: nil)
 	}
 	let xyz = part[..<nextOption]
 	if xyz.isEmpty {
 		guard let optionEnd = part.firstIndex(of: "}") else {
-			throw AbolishError.malformatted
+			throw Abolisher.Error.malformatted
 		}
 		return .option(
 			try parseOption(part[nextOption ... optionEnd]),
@@ -33,6 +32,6 @@ func parsePart(_ part: Substring) throws -> Part {
 
 func parseOption(_ option: Substring) throws -> [Substring] {
 	// Expect: {some,else}
-	guard option.hasPrefix("{"), option.hasSuffix("}") else { throw AbolishError.malformatted }
+	guard option.hasPrefix("{"), option.hasSuffix("}") else { throw Abolisher.Error.malformatted }
 	return option.dropFirst().dropLast().split(separator: ",", omittingEmptySubsequences: false)
 }

@@ -6,7 +6,7 @@ final class AbolisherTests: XCTestCase {
 		// This is an example of a functional test case.
 		// Use XCTAssert and related functions to verify your tests produce the correct
 		// results.
-		let input = "Abolish contin{u,o,ou,uo}s{,ly} contin{uou}s{}"
+		let input = "Abolish   contin{u,o,ou,uo}s{,ly}  contin{uou}s{}"
 		let output = [
 			"iabbrev continus continuous",
 			"iabbrev Continus Continuous",
@@ -41,7 +41,7 @@ final class AbolisherTests: XCTestCase {
 			"iabbrev CONTINUOSLY CONTINUOUSLY",
 			"",
 		]
-		XCTAssertEqual(expand(abolish: try! parseLine(input)!), output)
+		XCTAssertEqual(expand(abolisher: try! parseLine(input)!), output)
 	}
 
 	static var allTests = [

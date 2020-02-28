@@ -17,8 +17,8 @@ extension StringProtocol {
 }
 
 let iabbr = "iabbrev"
-func expand(abolish: Abolish) -> [String] {
-	return expand(pattern: abolish.pattern, replace: abolish.replace)
+func expand(abolisher: Abolisher) -> [String] {
+	return expand(pattern: abolisher.pattern, replace: abolisher.replace)
 		.flatMap { abolish -> [String] in
 			let pattern = abolish.0
 			let replace = abolish.1
@@ -31,7 +31,7 @@ func expand(abolish: Abolish) -> [String] {
 		}
 }
 
-func expand(pattern: Part?, replace: Part?) -> [(Substring, Substring)] {
+func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, Substring)] {
 	guard let pattern = pattern, let replace = replace else {
 		return []
 	}
