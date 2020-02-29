@@ -15,9 +15,19 @@ extension StringProtocol {
 	}
 }
 
-func expand(abolisher: Abolisher) throws -> [String] {
+public func expand(_ abolisher: Abolisher) throws -> [String] {
+	let abbrevs = try expandAbolisher(abolisher)
+	return expandInput(abolisher.input) + abbrevs
+
+}
+
+func expandAbolisher(_ abolisher: Abolisher) throws -> [String] {
 	try expand(pattern: abolisher.pattern, replace: abolisher.replace)
-		.flatMap(getVariations)
+	.flatMap(getVariations)
+}
+
+func expandInput(_ input: String) -> [String] {
+	return ["\" \(input)"]
 }
 
 func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Substring, Substring)] {

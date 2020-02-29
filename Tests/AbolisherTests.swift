@@ -102,7 +102,7 @@ final class AbolisherTests: XCTestCase {
 			"iabbrev DISCONTINUOSLY DISCONTINUOUSLY",
 			"",
 		]
-		XCTAssertEqual(try expand(abolisher: try parseLine(input)!), output)
+		XCTAssertEqual(try expandAbolisher(try parseLine(input)!), output)
 	}
 
 	func testNoAbolishLine() {
@@ -131,7 +131,7 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptions() throws {
 		do {
-			_ = try expand(abolisher: try parseLine("Abolish some{a,b} else{a,b,c}")!)
+			_ = try expandAbolisher(try parseLine("Abolish some{a,b} else{a,b,c}")!)
 			XCTFail("Should not be parsed")
 		} catch Abolisher.Error.mismatchingOptions(pat: 2, rep: 3) {
 			// success
@@ -142,7 +142,7 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptionCount() throws {
 		do {
-			_ = try expand(abolisher: try parseLine("Abolish some{a,b} el{}se{a,b}")!)
+			_ = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}")!)
 			XCTFail("Should not be parsed")
 		} catch Abolisher.Error.missingPatternOptions {
 			// success
@@ -150,7 +150,7 @@ final class AbolisherTests: XCTestCase {
 			throw error
 		}
 		do {
-			_ = try expand(abolisher: try parseLine("Abolish so{a}me{a,b} else{a}")!)
+			_ = try expandAbolisher(try parseLine("Abolish so{a}me{a,b} else{a}")!)
 			XCTFail("Should not be parsed")
 		} catch Abolisher.Error.missingReplaceOptions {
 			// success
@@ -162,12 +162,41 @@ final class AbolisherTests: XCTestCase {
 	func testEmptyPatternOption() throws {
 		// What would I expect here?
 		XCTAssertEqual(
-			try expand(abolisher: try parseLine("Abolish so{}me else{a}")!),
+			try expandAbolisher(try parseLine("Abolish so{}me else{a}")!),
 			[
 				"iabbrev some elsea",
 				"iabbrev Some Elsea",
 				"iabbrev SOME ELSEA",
 				"",
+			]
+		)
+	}
+
+	func testFullOutput() throws {
+		let input = [
+			"Abolish s{o}me else{}",
+			"Abolish s{u}me else{}",
+			]
+
+		let parsed = try parse(input)
+
+		XCTAssertEqual(
+			try parsed.map(expand),
+			[
+			[
+				"\" \(input.first!)",
+				"iabbrev some elseo",
+				"iabbrev Some Elseo",
+				"iabbrev SOME ELSEO",
+				"",
+			],
+			[
+				"\" \(input.last!)",
+				"iabbrev sume elseu",
+				"iabbrev Sume Elseu",
+				"iabbrev SUME ELSEU",
+				"",
+			]
 			]
 		)
 	}
@@ -180,5 +209,6 @@ final class AbolisherTests: XCTestCase {
 		("testMismatchingOptions", testMismatchingOptions),
 		("testMismatchingOptionCount", testMismatchingOptionCount),
 		("testEmptyPatternOption", testEmptyPatternOption),
+		("testFullOutput", testFullOutput),
 	]
 }
