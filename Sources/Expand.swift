@@ -26,10 +26,10 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 		return []
 
 	case (.option, .none):
-		throw Abolisher.Error.missingPatternOptions
+		throw Abolisher.Error.missingReplaceOptions
 
 	case (.none, .option):
-		throw Abolisher.Error.missingReplaceOptions
+		throw Abolisher.Error.missingPatternOptions
 
 	case let (.part(pattern, nextPattern), .part(replace, nextReplace)):
 		return combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
