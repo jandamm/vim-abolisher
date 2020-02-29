@@ -15,40 +15,52 @@ extension StringProtocol {
 	}
 }
 
-func expand(abolisher: Abolisher) -> [String] {
-	expand(pattern: abolisher.pattern, replace: abolisher.replace)
+func expand(abolisher: Abolisher) throws -> [String] {
+	try expand(pattern: abolisher.pattern, replace: abolisher.replace)
 		.flatMap(getVariations)
 }
 
-func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, Substring)] {
-	guard let pattern = pattern,
-		let replace = replace else {
-		return []
-	}
-
+func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Substring, Substring)] {
 	switch (pattern, replace) {
+	case (.none, .none):
+		return []
+
+	case (.option, .none):
+		throw Abolisher.Error.missingPatternOptions
+
+	case (.none, .option):
+		throw Abolisher.Error.missingReplaceOptions
+
 	case let (.part(pattern, nextPattern), .part(replace, nextReplace)):
-		return combine((pattern, replace), expand(pattern: nextPattern, replace: nextReplace))
+		return combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
 
-	case let (.part(pattern, nextPattern), .option):
-		return combine((pattern, ""), expand(pattern: nextPattern, replace: replace))
+	case let (.part(pattern, nextPattern), .option),
+	     let (.part(pattern, nextPattern), .none):
+		return combine((pattern, ""), try expand(pattern: nextPattern, replace: replace))
 
-	case let (.option, .part(replace, nextReplace)):
-		return combine(("", replace), expand(pattern: pattern, replace: nextReplace))
+	case let (.option, .part(replace, nextReplace)),
+	     let (.none, .part(replace, nextReplace)):
+		return combine(("", replace), try expand(pattern: pattern, replace: nextReplace))
 
 	case let (.option(patterns, nextPattern), .option(replaces, nextReplace)):
 		let opt: [Substring]
+		let replacesCount = replaces.count
 		if replaces == [""] {
 			opt = patterns
-		} else if let onlyReplace = replaces.first, replaces.count == 1 {
-			opt = Array(repeating: onlyReplace, count: patterns.count)
+		} else if let singleReplace = replaces.first, replacesCount == 1 {
+			opt = Array(repeating: singleReplace, count: patterns.count)
 		} else {
+			let patternsCount = patterns.count
+			if patternsCount != replacesCount {
+				throw Abolisher.Error.mismatchingOptions(pat: patternsCount, rep: replacesCount)
+			}
 			opt = replaces
 		}
 
-		return zip(patterns, opt)
+		return try zip(patterns, opt)
 			.flatMap { (pattern, replace) -> [(Substring, Substring)] in
-				combine((pattern, replace), expand(pattern: nextPattern, replace: nextReplace))
+				combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
+
 			}
 	}
 }

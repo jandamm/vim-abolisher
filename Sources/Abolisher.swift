@@ -11,5 +11,8 @@ struct Abolisher {
 	enum Error: Swift.Error {
 		case replaceMissing
 		case missingClosingBracket
+		case mismatchingOptions(pat: Int, rep: Int)
+		case missingReplaceOptions
+		case missingPatternOptions
 	}
 }

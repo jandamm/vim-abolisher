@@ -2,7 +2,7 @@
 import XCTest
 
 final class AbolisherTests: XCTestCase {
-	func testFullExpansion() {
+	func testFullExpansion() throws {
 		// This is an example of a functional test case.
 		// Use XCTAssert and related functions to verify your tests produce the correct
 		// results.
@@ -41,7 +41,7 @@ final class AbolisherTests: XCTestCase {
 			"iabbrev CONTINUOSLY CONTINUOUSLY",
 			"",
 		]
-		XCTAssertEqual(expand(abolisher: try! parseLine(input)!), output)
+		XCTAssertEqual(try expand(abolisher: try parseLine(input)!), output)
 	}
 
 	static var allTests = [
