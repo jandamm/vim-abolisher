@@ -172,6 +172,17 @@ final class AbolisherTests: XCTestCase {
 		)
 	}
 
+	func testMissingBracket() throws {
+		do {
+			_ = try parsePart("abs{ar,bs")
+			XCTFail("Should not be parsed")
+		} catch Abolisher.Error.missingClosingBracket {
+			// success
+		} catch {
+			throw error
+		}
+	}
+
 	func testFullOutput() throws {
 		let input = [
 			"Abolish s{o}me else{}",
