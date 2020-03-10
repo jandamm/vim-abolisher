@@ -18,12 +18,11 @@ extension StringProtocol {
 public func expand(_ abolisher: Abolisher) throws -> [String] {
 	let abbrevs = try expandAbolisher(abolisher)
 	return expandInput(abolisher.input) + abbrevs
-
 }
 
 func expandAbolisher(_ abolisher: Abolisher) throws -> [String] {
 	try expand(pattern: abolisher.pattern, replace: abolisher.replace)
-	.flatMap(getVariations)
+		.flatMap(getVariations)
 }
 
 func expandInput(_ input: String) -> [String] {
@@ -72,7 +71,6 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 		return try zip(patterns, opt)
 			.flatMap { (pattern, replace) -> [(Substring, Substring)] in
 				combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
-
 			}
 	}
 }

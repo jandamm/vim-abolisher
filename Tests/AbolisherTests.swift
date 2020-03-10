@@ -159,7 +159,6 @@ final class AbolisherTests: XCTestCase {
 	}
 
 	func testEmptyPatternOption() throws {
-		// What would I expect here?
 		XCTAssertEqual(
 			try expandAbolisher(try parseLine("Abolish so{}me else{a}")!),
 			[
@@ -186,27 +185,27 @@ final class AbolisherTests: XCTestCase {
 		let input = [
 			"Abolish s{o}me else{}",
 			"Abolish s{u}me else{}",
-			]
+		]
 
 		let parsed = try parse(input)
 
 		XCTAssertEqual(
 			try parsed.map(expand),
 			[
-			[
-				"\" \(input.first!)",
-				"iabbrev some elseo",
-				"iabbrev Some Elseo",
-				"iabbrev SOME ELSEO",
-				"",
-			],
-			[
-				"\" \(input.last!)",
-				"iabbrev sume elseu",
-				"iabbrev Sume Elseu",
-				"iabbrev SUME ELSEU",
-				"",
-			]
+				[
+					"\" \(input.first!)",
+					"iabbrev some elseo",
+					"iabbrev Some Elseo",
+					"iabbrev SOME ELSEO",
+					"",
+				],
+				[
+					"\" \(input.last!)",
+					"iabbrev sume elseu",
+					"iabbrev Sume Elseu",
+					"iabbrev SUME ELSEU",
+					"",
+				],
 			]
 		)
 	}
