@@ -35,11 +35,11 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 	case (.none, .none):
 		return []
 
-	case (.option, .none):
-		throw Abolisher.Error.missingReplaceOptions
+	case let (.option(pattern, nextPattern), .none):
+		return combine(("{\(pattern.joined(separator: ","))}", ""), try expand(pattern: nextPattern, replace: nil))
 
-	case (.none, .option):
-		throw Abolisher.Error.missingPatternOptions
+	case let (.none, .option(replace, nextReplace)):
+		return combine(("", "{\(replace.joined(separator: ","))}"), try expand(pattern: nil, replace: nextReplace))
 
 	case let (.part(pattern, nextPattern), .part(replace, nextReplace)):
 		return combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))

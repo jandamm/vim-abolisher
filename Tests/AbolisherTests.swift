@@ -142,18 +142,22 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptionCount() throws {
 		do {
-			_ = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}")!)
-			XCTFail("Should not be parsed")
+			let expands = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}a{x}")!)
+			XCTAssertEqual(
+				expands.first!,
+				"iabbrev somea elase{a,b}a{x}"
+			)
 		} catch Abolisher.Error.missingPatternOptions {
 			// success
 		} catch {
 			throw error
 		}
 		do {
-			_ = try expandAbolisher(try parseLine("Abolish so{a}me{a,b} else{a}")!)
-			XCTFail("Should not be parsed")
-		} catch Abolisher.Error.missingReplaceOptions {
-			// success
+			let expands = try expandAbolisher(try parseLine("Abolish so{a}me{a,b}a{x} else{a}")!)
+			XCTAssertEqual(
+				expands.first!,
+				"iabbrev soame{a,b}a{x} elsea"
+			)
 		} catch {
 			throw error
 		}

@@ -12,7 +12,5 @@ public struct Abolisher: Equatable {
 		case replaceMissing
 		case missingClosingBracket
 		case mismatchingOptions(pat: Int, rep: Int)
-		case missingReplaceOptions
-		case missingPatternOptions
 	}
 }
