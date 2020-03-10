@@ -36,7 +36,9 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 		return []
 
 	case let (.option(pattern, nextPattern), .none):
-		return combine(("{\(pattern.joined(separator: ","))}", ""), try expand(pattern: nextPattern, replace: nil))
+		return try pattern.flatMap {
+			combine(($0, ""), try expand(pattern: nextPattern, replace: nil))
+		}
 
 	case let (.none, .option(replace, nextReplace)):
 		return combine(("", "{\(replace.joined(separator: ","))}"), try expand(pattern: nil, replace: nextReplace))

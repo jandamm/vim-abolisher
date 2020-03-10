@@ -142,22 +142,17 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptionCount() throws {
 		do {
-			let expands = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}a{x}")!)
-			XCTAssertEqual(
-				expands.first!,
-				"iabbrev somea elase{a,b}a{x}"
-			)
-		} catch Abolisher.Error.missingPatternOptions {
-			// success
+			let expandA = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}a{x}")!).first!
+			let expandB = try expandAbolisher(try parseLine("Abolish some el{}se{a,b}a{x}")!).first!
+			XCTAssertEqual(expandA, "iabbrev somea elase{a,b}a{x}")
+			XCTAssertEqual(expandB, "iabbrev some el{}se{a,b}a{x}")
 		} catch {
 			throw error
 		}
 		do {
-			let expands = try expandAbolisher(try parseLine("Abolish so{a}me{a,b}a{x} else{a}")!)
-			XCTAssertEqual(
-				expands.first!,
-				"iabbrev soame{a,b}a{x} elsea"
-			)
+			let expands = try expandAbolisher(try parseLine("Abolish so{a}me{a,b}a{x} else{b}")!)
+			XCTAssertEqual(expands[0], "iabbrev soameaax elseb")
+			XCTAssertEqual(expands[4], "iabbrev soamebax elseb")
 		} catch {
 			throw error
 		}
