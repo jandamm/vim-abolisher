@@ -131,10 +131,36 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptions() throws {
 		do {
-			_ = try expandAbolisher(try parseLine("Abolish some{a,b} else{a,b,c}")!)
-			XCTFail("Should not be parsed")
-		} catch Abolisher.Error.mismatchingOptions(pat: 2, rep: 3) {
-			// success
+			let lessPattern = try expandAbolisher(try parseLine("Abolish s{a,b} e{c,d,e}")!)
+			let lessReplace = try expandAbolisher(try parseLine("Abolish s{a,b,c} e{d,e}")!)
+			let emptPattern = try expandAbolisher(try parseLine("Abolish s{a,b} e{}")!)
+			let emptReplace = try expandAbolisher(try parseLine("Abolish s{} e{a,b,c}")!)
+			let onePattern = try expandAbolisher(try parseLine("Abolish s{a} e{b,c,d}")!)
+			let oneReplace = try expandAbolisher(try parseLine("Abolish s{a,b} e{c}")!)
+
+			XCTAssertEqual(lessPattern[0], "iabbrev sa ec")
+			XCTAssertEqual(lessPattern[4], "iabbrev sb ed")
+			XCTAssertEqual(lessPattern.count, 8)
+
+			XCTAssertEqual(lessReplace[0], "iabbrev sa ed")
+			XCTAssertEqual(lessReplace[4], "iabbrev sb ee")
+			XCTAssertEqual(lessReplace[8], "iabbrev sc ed")
+			XCTAssertEqual(lessReplace.count, 12)
+
+			XCTAssertEqual(emptPattern[0], "iabbrev sa ea")
+			XCTAssertEqual(emptPattern[4], "iabbrev sb eb")
+			XCTAssertEqual(emptPattern.count, 8)
+
+			XCTAssertEqual(emptReplace[0], "iabbrev s ea")
+			XCTAssertEqual(emptReplace.count, 4)
+
+			XCTAssertEqual(onePattern[0], "iabbrev sa eb")
+			XCTAssertEqual(onePattern.count, 4)
+
+			XCTAssertEqual(oneReplace[0], "iabbrev sa ec")
+			XCTAssertEqual(oneReplace[4], "iabbrev sb ec")
+			XCTAssertEqual(oneReplace.count, 8)
+
 		} catch {
 			throw error
 		}

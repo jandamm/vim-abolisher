@@ -54,23 +54,15 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 		return combine(("", replace), try expand(pattern: pattern, replace: nextReplace))
 
 	case let (.option(patterns, nextPattern), .option(replaces, nextReplace)):
-		let opt: [Substring]
-		let replacesCount = replaces.count
-		if replaces == [""] {
-			opt = patterns
-		} else if let singleReplace = replaces.first, replacesCount == 1 {
-			opt = Array(repeating: singleReplace, count: patterns.count)
-		} else {
-			let patternsCount = patterns.count
-			if patternsCount != replacesCount {
-				throw Abolisher.Error.mismatchingOptions(pat: patternsCount, rep: replacesCount)
-			}
-			opt = replaces
-		}
+		let options = replaces == [""]
+			? patterns
+			: replaces
+			let optionsCount = options.count
 
-		return try zip(patterns, opt)
-			.flatMap { (pattern, replace) -> [(Substring, Substring)] in
-				combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
+		return try patterns
+			.enumerated()
+			.flatMap { (index, pattern) -> [(Substring, Substring)] in
+				combine((pattern, options[index % optionsCount]), try expand(pattern: nextPattern, replace: nextReplace))
 			}
 	}
 }
