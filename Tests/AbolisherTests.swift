@@ -102,7 +102,7 @@ final class AbolisherTests: XCTestCase {
 			"iabbrev DISCONTINUOSLY DISCONTINUOUSLY",
 			"",
 		]
-		XCTAssertEqual(try expandAbolisher(try parseLine(input)!), output)
+		XCTAssertEqual(expandAbolisher(try parseLine(input)!), output)
 	}
 
 	func testNoAbolishLine() {
@@ -131,12 +131,12 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptions() throws {
 		do {
-			let lessPattern = try expandAbolisher(try parseLine("Abolish s{a,b} e{c,d,e}")!)
-			let lessReplace = try expandAbolisher(try parseLine("Abolish s{a,b,c} e{d,e}")!)
-			let emptPattern = try expandAbolisher(try parseLine("Abolish s{a,b} e{}")!)
-			let emptReplace = try expandAbolisher(try parseLine("Abolish s{} e{a,b,c}")!)
-			let onePattern = try expandAbolisher(try parseLine("Abolish s{a} e{b,c,d}")!)
-			let oneReplace = try expandAbolisher(try parseLine("Abolish s{a,b} e{c}")!)
+			let lessPattern = expandAbolisher(try parseLine("Abolish s{a,b} e{c,d,e}")!)
+			let lessReplace = expandAbolisher(try parseLine("Abolish s{a,b,c} e{d,e}")!)
+			let emptPattern = expandAbolisher(try parseLine("Abolish s{a,b} e{}")!)
+			let emptReplace = expandAbolisher(try parseLine("Abolish s{} e{a,b,c}")!)
+			let onePattern = expandAbolisher(try parseLine("Abolish s{a} e{b,c,d}")!)
+			let oneReplace = expandAbolisher(try parseLine("Abolish s{a,b} e{c}")!)
 
 			XCTAssertEqual(lessPattern[0], "iabbrev sa ec")
 			XCTAssertEqual(lessPattern[4], "iabbrev sb ed")
@@ -168,15 +168,15 @@ final class AbolisherTests: XCTestCase {
 
 	func testMismatchingOptionCount() throws {
 		do {
-			let expandA = try expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}a{x}")!).first!
-			let expandB = try expandAbolisher(try parseLine("Abolish some el{}se{a,b}a{x}")!).first!
+			let expandA = expandAbolisher(try parseLine("Abolish some{a,b} el{}se{a,b}a{x}")!).first!
+			let expandB = expandAbolisher(try parseLine("Abolish some el{}se{a,b}a{x}")!).first!
 			XCTAssertEqual(expandA, "iabbrev somea elase{a,b}a{x}")
 			XCTAssertEqual(expandB, "iabbrev some el{}se{a,b}a{x}")
 		} catch {
 			throw error
 		}
 		do {
-			let expands = try expandAbolisher(try parseLine("Abolish so{a}me{a,b}a{x} else{b}")!)
+			let expands = expandAbolisher(try parseLine("Abolish so{a}me{a,b}a{x} else{b}")!)
 			XCTAssertEqual(expands[0], "iabbrev soameaax elseb")
 			XCTAssertEqual(expands[4], "iabbrev soamebax elseb")
 		} catch {
@@ -186,7 +186,7 @@ final class AbolisherTests: XCTestCase {
 
 	func testEmptyPatternOption() throws {
 		XCTAssertEqual(
-			try expandAbolisher(try parseLine("Abolish so{}me else{a}")!),
+			expandAbolisher(try parseLine("Abolish so{}me else{a}")!),
 			[
 				"iabbrev some elsea",
 				"iabbrev Some Elsea",
@@ -203,7 +203,7 @@ final class AbolisherTests: XCTestCase {
 			.part("abs", next: .part("{ar,bs", next: nil))
 		)
 		XCTAssertEqual(
-			try expand(pattern: part, replace: nil).first!.0,
+			expand(pattern: part, replace: nil).first!.0,
 			"abs{ar,bs"
 		)
 	}
@@ -217,7 +217,7 @@ final class AbolisherTests: XCTestCase {
 		let parsed = try parse(input)
 
 		XCTAssertEqual(
-			try parsed.map(expand),
+			parsed.map(expand),
 			[
 				[
 					"\" \(input.first!)",

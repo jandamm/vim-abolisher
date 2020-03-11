@@ -15,13 +15,13 @@ extension StringProtocol {
 	}
 }
 
-public func expand(_ abolisher: Abolisher) throws -> [String] {
-	let abbrevs = try expandAbolisher(abolisher)
+public func expand(_ abolisher: Abolisher) -> [String] {
+	let abbrevs = expandAbolisher(abolisher)
 	return expandInput(abolisher.input) + abbrevs
 }
 
-func expandAbolisher(_ abolisher: Abolisher) throws -> [String] {
-	try expand(pattern: abolisher.pattern, replace: abolisher.replace)
+func expandAbolisher(_ abolisher: Abolisher) -> [String] {
+	expand(pattern: abolisher.pattern, replace: abolisher.replace)
 		.flatMap(getVariations)
 }
 
@@ -29,29 +29,29 @@ func expandInput(_ input: String) -> [String] {
 	return ["\" \(input)"]
 }
 
-func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Substring, Substring)] {
+func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, Substring)] {
 	switch (pattern, replace) {
 	case (.none, .none):
 		return []
 
 	case let (.option(pattern, nextPattern), .none):
-		return try pattern.flatMap {
-			combine(($0, ""), try expand(pattern: nextPattern, replace: nil))
+		return pattern.flatMap {
+			combine(($0, ""), expand(pattern: nextPattern, replace: nil))
 		}
 
 	case let (.none, .option(replace, nextReplace)):
-		return combine(("", "{\(replace.joined(separator: ","))}"), try expand(pattern: nil, replace: nextReplace))
+		return combine(("", "{\(replace.joined(separator: ","))}"), expand(pattern: nil, replace: nextReplace))
 
 	case let (.part(pattern, nextPattern), .part(replace, nextReplace)):
-		return combine((pattern, replace), try expand(pattern: nextPattern, replace: nextReplace))
+		return combine((pattern, replace), expand(pattern: nextPattern, replace: nextReplace))
 
 	case let (.part(pattern, nextPattern), .option),
 	     let (.part(pattern, nextPattern), .none):
-		return combine((pattern, ""), try expand(pattern: nextPattern, replace: replace))
+		return combine((pattern, ""), expand(pattern: nextPattern, replace: replace))
 
 	case let (.option, .part(replace, nextReplace)),
 	     let (.none, .part(replace, nextReplace)):
-		return combine(("", replace), try expand(pattern: pattern, replace: nextReplace))
+		return combine(("", replace), expand(pattern: pattern, replace: nextReplace))
 
 	case let (.option(patterns, nextPattern), .option(replaces, nextReplace)):
 		let options = replaces == [""]
@@ -59,10 +59,10 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) throws -> [(Subs
 			: replaces
 			let optionsCount = options.count
 
-		return try patterns
+		return patterns
 			.enumerated()
 			.flatMap { (index, pattern) -> [(Substring, Substring)] in
-				combine((pattern, options[index % optionsCount]), try expand(pattern: nextPattern, replace: nextReplace))
+				combine((pattern, options[index % optionsCount]), expand(pattern: nextPattern, replace: nextReplace))
 			}
 	}
 }
