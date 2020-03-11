@@ -7,7 +7,7 @@ func parseLine(_ line: String) throws -> Abolisher? {
 
 	let parts = line.split(separator: " ")
 
-	guard parts.count >= 3 else { throw Abolisher.Error.replaceMissing }
+	guard parts.count >= 3 else { throw Abolisher.Error.replaceMissing(line: line) }
 
 	return Abolisher(
 		input: line,

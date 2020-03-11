@@ -9,6 +9,6 @@ public struct Abolisher: Equatable {
 	}
 
 	public enum Error: Swift.Error, Equatable {
-		case replaceMissing
+		case replaceMissing(line: String)
 	}
 }

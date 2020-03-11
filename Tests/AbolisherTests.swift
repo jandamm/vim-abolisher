@@ -111,11 +111,12 @@ final class AbolisherTests: XCTestCase {
 	}
 
 	func testMissingReplace() throws {
+		let input = "Abolish some "
 		do {
-			_ = try parseLine("Abolish some ")
+			_ = try parseLine(input)
 			XCTFail("Should not be parsed")
-		} catch Abolisher.Error.replaceMissing {
-			// success
+		} catch let Abolisher.Error.replaceMissing(line) {
+			XCTAssertEqual(line, input)
 		} catch {
 			throw error
 		}
