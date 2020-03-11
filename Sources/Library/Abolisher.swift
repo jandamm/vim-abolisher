@@ -10,7 +10,6 @@ public struct Abolisher: Equatable {
 
 	public enum Error: Swift.Error, Equatable {
 		case replaceMissing
-		case missingClosingBracket
 		case mismatchingOptions(pat: Int, rep: Int)
 	}
 }

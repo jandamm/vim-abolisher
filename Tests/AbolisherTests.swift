@@ -171,14 +171,15 @@ final class AbolisherTests: XCTestCase {
 	}
 
 	func testMissingBracket() throws {
-		do {
-			_ = try parsePart("abs{ar,bs")
-			XCTFail("Should not be parsed")
-		} catch Abolisher.Error.missingClosingBracket {
-			// success
-		} catch {
-			throw error
-		}
+		let part = parsePart("abs{ar,bs")
+		XCTAssertEqual(
+			part,
+			.part("abs", next: .part("{ar,bs", next: nil))
+		)
+		XCTAssertEqual(
+			try expand(pattern: part, replace: nil).first!.0,
+			"abs{ar,bs"
+		)
 	}
 
 	func testFullOutput() throws {

@@ -11,30 +11,30 @@ func parseLine(_ line: String) throws -> Abolisher? {
 
 	return Abolisher(
 		input: line,
-		pattern: try parsePart(parts[1]),
-		replace: try parsePart(parts[2])
+		pattern: parsePart(parts[1]),
+		replace: parsePart(parts[2])
 	)
 }
 
-func parsePart(_ part: Substring) throws -> Abolisher.Part {
+func parsePart(_ part: Substring) -> Abolisher.Part {
 	switch part.firstIndex(of: "{") {
 	case part.startIndex:
 		guard let optionEndIndex = part.firstIndex(of: "}") else {
-			throw Abolisher.Error.missingClosingBracket
+			return .part(part, next: nil)
 		}
 		return .option(
-			try parseOption(part[...optionEndIndex]),
-			next: try parsePart(part[part.index(after: optionEndIndex)...]
+			parseOption(part[...optionEndIndex]),
+			next: parsePart(part[part.index(after: optionEndIndex)...]
 			)
 		)
 	case let nextOptionIndex?:
-		return .part(part[..<nextOptionIndex], next: try parsePart(part[nextOptionIndex...]))
+		return .part(part[..<nextOptionIndex], next: parsePart(part[nextOptionIndex...]))
 	case nil:
 		return .part(part, next: nil)
 	}
 }
 
-func parseOption(_ option: Substring) throws -> [Substring] {
+func parseOption(_ option: Substring) -> [Substring] {
 	option
 		.dropFirst()
 		.dropLast()
