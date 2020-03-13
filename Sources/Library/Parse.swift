@@ -1,9 +1,11 @@
 public func parse(_ lines: [String]) throws -> [Abolisher] {
-	try lines.compactMap(parseLine)
+	try lines.map(parseLine)
 }
 
-func parseLine(_ line: String) throws -> Abolisher? {
-	guard line.hasPrefix("Abolish ") else { return nil }
+func parseLine(_ line: String) throws -> Abolisher {
+	guard line.hasPrefix("Abolish ") else {
+		return Abolisher(input: line, type: .line)
+	}
 
 	let parts = line.split(separator: " ")
 
