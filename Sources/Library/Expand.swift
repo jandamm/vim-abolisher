@@ -17,15 +17,20 @@ extension StringProtocol {
 
 public func expand(_ abolisher: Abolisher) -> [String] {
 	let abbrevs = expandAbolisher(abolisher)
-	return expandInput(abolisher.input) + abbrevs
+	return inputComment(abolisher.input) + abbrevs
 }
 
 func expandAbolisher(_ abolisher: Abolisher) -> [String] {
-	expand(pattern: abolisher.pattern, replace: abolisher.replace)
+	switch abolisher.type {
+	case let .abolish(pattern, replace):
+	return expand(pattern: pattern, replace: replace)
 		.flatMap(getVariations)
+	case .line:
+		return []
+	}
 }
 
-func expandInput(_ input: String) -> [String] {
+func inputComment(_ input: String) -> [String] {
 	return ["\" \(input)"]
 }
 

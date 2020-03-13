@@ -1,7 +1,11 @@
 public struct Abolisher: Equatable {
 	internal let input: String
-	internal let pattern: Part
-	internal let replace: Part
+	internal let type: Case
+
+	enum Case: Equatable {
+		case abolish(pattern: Part, replace: Part)
+		case line
+	}
 
 	internal indirect enum Part: Equatable {
 		case part(Substring, next: Part?)

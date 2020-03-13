@@ -11,8 +11,10 @@ func parseLine(_ line: String) throws -> Abolisher? {
 
 	return Abolisher(
 		input: line,
-		pattern: parsePart(parts[1]),
-		replace: parsePart(parts[2])
+		type: .abolish(
+			pattern: parsePart(parts[1]),
+			replace: parsePart(parts[2])
+		)
 	)
 }
 

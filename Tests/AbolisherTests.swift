@@ -126,7 +126,7 @@ final class AbolisherTests: XCTestCase {
 		let input = "Abolish some else more stuff"
 		XCTAssertEqual(
 			try parseLine(input),
-			Abolisher(input: input, pattern: .part("some", next: nil), replace: .part("else", next: nil))
+			Abolisher(input: input, type: .abolish(pattern: .part("some", next: nil), replace: .part("else", next: nil)))
 		)
 	}
 
