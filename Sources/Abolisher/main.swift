@@ -10,7 +10,7 @@ do {
 		.map(String.init(contentsOf:))
 		.map { $0.components(separatedBy: .newlines) }
 		.flatMap(parse)
-		.flatMap(expand)
+		.flatMap(expand(includeOtherLines: false))
 		.forEach(echo)
 } catch let Abolisher.Error.replaceMissing(line) {
 	echoErr("There is no Replace detected in this line:\n\(line)")

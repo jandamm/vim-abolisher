@@ -15,23 +15,34 @@ extension StringProtocol {
 	}
 }
 
-public func expand(_ abolisher: Abolisher) -> [String] {
-	let abbrevs = expandAbolisher(abolisher)
-	return inputComment(abolisher.input) + abbrevs
+public func expand(includeOtherLines: Bool) -> (_ abolisher: Abolisher) -> [String] {
+	return { abolisher in expand(abolisher, includeOtherLines: includeOtherLines) }
 }
 
-func expandAbolisher(_ abolisher: Abolisher) -> [String] {
+public func expand(_ abolisher: Abolisher, includeOtherLines: Bool) -> [String] {
+	expandAbolisherComment(abolisher)
+		+ expandAbolisher(abolisher, includeOtherLines: includeOtherLines)
+}
+
+func expandAbolisher(_ abolisher: Abolisher, includeOtherLines: Bool) -> [String] {
 	switch abolisher.type {
 	case let .abolish(pattern, replace):
-	return expand(pattern: pattern, replace: replace)
-		.flatMap(getVariations)
+		return expand(pattern: pattern, replace: replace)
+			.flatMap(getVariations)
+	case .line where includeOtherLines:
+		return [abolisher.input]
 	case .line:
 		return []
 	}
 }
 
-func inputComment(_ input: String) -> [String] {
-	return ["\" \(input)"]
+func expandAbolisherComment(_ abolisher: Abolisher) -> [String] {
+	switch abolisher.type {
+	case .abolish:
+		return ["\" \(abolisher.input)"]
+	case .line:
+		return []
+	}
 }
 
 func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, Substring)] {
@@ -62,7 +73,7 @@ func expand(pattern: Abolisher.Part?, replace: Abolisher.Part?) -> [(Substring, 
 		let options = replaces == [""]
 			? patterns
 			: replaces
-			let optionsCount = options.count
+		let optionsCount = options.count
 
 		return patterns
 			.enumerated()
