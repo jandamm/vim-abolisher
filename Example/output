@@ -1,0 +1,70 @@
+iabbrev @@ mail@jandamm.de
+
+cabbrev git !git
+
+" Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}  {despe,sepa}rat{}
+iabbrev desparate desperate
+iabbrev Desparate Desperate
+iabbrev DESPARATE DESPERATE
+
+iabbrev desparates desperates
+iabbrev Desparates Desperates
+iabbrev DESPARATES DESPERATES
+
+iabbrev desparated desperated
+iabbrev Desparated Desperated
+iabbrev DESPARATED DESPERATED
+
+iabbrev desparating desperating
+iabbrev Desparating Desperating
+iabbrev DESPARATING DESPERATING
+
+iabbrev desparately desperately
+iabbrev Desparately Desperately
+iabbrev DESPARATELY DESPERATELY
+
+iabbrev desparation desperation
+iabbrev Desparation Desperation
+iabbrev DESPARATION DESPERATION
+
+iabbrev desparations desperations
+iabbrev Desparations Desperations
+iabbrev DESPARATIONS DESPERATIONS
+
+iabbrev desparator desperator
+iabbrev Desparator Desperator
+iabbrev DESPARATOR DESPERATOR
+
+iabbrev seperate separate
+iabbrev Seperate Separate
+iabbrev SEPERATE SEPARATE
+
+iabbrev seperates separates
+iabbrev Seperates Separates
+iabbrev SEPERATES SEPARATES
+
+iabbrev seperated separated
+iabbrev Seperated Separated
+iabbrev SEPERATED SEPARATED
+
+iabbrev seperating separating
+iabbrev Seperating Separating
+iabbrev SEPERATING SEPARATING
+
+iabbrev seperately separately
+iabbrev Seperately Separately
+iabbrev SEPERATELY SEPARATELY
+
+iabbrev seperation separation
+iabbrev Seperation Separation
+iabbrev SEPERATION SEPARATION
+
+iabbrev seperations separations
+iabbrev Seperations Separations
+iabbrev SEPERATIONS SEPARATIONS
+
+iabbrev seperator separator
+iabbrev Seperator Separator
+iabbrev SEPERATOR SEPARATOR
+
+

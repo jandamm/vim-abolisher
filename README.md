@@ -10,6 +10,8 @@ After some testing I found out that `:iabbrev` is extremely fast. Even when crea
 
 Creating many `iabbrevs` by hand sucks, so it was time to abolish vim-abolish.
 
+[Example](Example)
+
 ## Installation
 
 * There is a compiled version (for macOS) of `abolisher` in this repo in `bin`.
