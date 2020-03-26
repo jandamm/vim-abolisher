@@ -46,3 +46,7 @@ The corresponding file created with `abolisher` took **1.5** milliseconds to loa
 This is **20** times less.
 
 I still use vim-abolish for its `:S` command and sometimes for `:Abolish` when I need it just in this file/session.
+
+## Where to go from here?
+
+* I may add a way to configure the implicit behaviour of including every line or just "^Abolish" lines
