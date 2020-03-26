@@ -50,3 +50,8 @@ I still use vim-abolish for its `:S` command and sometimes for `:Abolish` when I
 ## Where to go from here?
 
 * I may add a way to configure the implicit behaviour of including every line or just "^Abolish" lines
+
+## Differences/Bugs
+
+* `abolisher` does not accept spaces in the replace part. I don't have the need right now but maybe add it later
+* Create a bug if you spot a difference...
