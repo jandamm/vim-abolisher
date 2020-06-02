@@ -12,18 +12,48 @@ Creating many `iabbrevs` by hand sucks, so it was time to abolish vim-abolish.
 
 [Example](Example)
 
-## Installation
+## Requirements
 
-* There is a compiled version (for macOS) of `abolisher` in this repo in `bin`.
+* [Swift](https://swift.org)
 
-* Otherwise install [Swift](https://swift.org) and run `make` or `make install`.
+## Installation with [vim-plug](https://github.com/junegunn/vim-plug)
+
+``` vim
+Plug 'jandamm/vim-abolisher', { 'do': 'make build' }
+```
 
 ## Usage
+
+* Create a abolish file: `filename.abolish`
+* Add everything you want to abolish and save the file.
+
+(Make sure the filetype is set: `set ft=abolish`)
+
+This will create the file `filename.vim`.
+Make sure `filename.vim` is in your Vim runtime or sourced explicitly.
+
+## Example file
+
+``` vim
+if exists('g:loaded_abolish_after')
+  finish
+endif
+let g:loaded_abolish_after = 1
+
+Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or} {despe,sepa}rat{}
+iabbrev omw on my way
+```
+
+## Try before converting?
+
+Either clone or install this plugin with vim-plug.
+After running `make build` the executable `abolisher` is in `bin`.
+Now add `bin` to your path or replace `abolisher` below with the full path to the file.
 
 ### One Abolish file
 
 If you have one file where all your `Abolish` lives in, move it out of your vim runtime or change the extension to something else.
-Then run `abolisher abolish.txt > abolish.vim`.
+Then run `abolisher abolish.abolish > abolish.vim`.
 
 This will output every line in this file and every line starting with "Abolish" will be expanded to the corresponding `iabbrev`.
 
@@ -37,7 +67,7 @@ If you want to test `abolisher` nonetheless you can provide it a list of files a
 
 When you want to test your speed improvement you need to remove all "Abolish" lines:
 
-`sed -i '' '/^Abolish/d' **/*.vim`
+`sed -i 'bak' '/^Abolish/d' **/*.vim`
 
 ## Speed improvement
 
