@@ -2,7 +2,10 @@ import Foundation
 import Library
 
 func echo(_ str: String) { print(str) }
-func echoErr(_ str: String) { FileHandle.standardError.write(Data(str.utf8)) }
+func echoErr(_ str: String) {
+	FileHandle.standardError.write(Data(str.utf8))
+	exit(1)
+}
 
 func main() {
 	let arguments = CommandLine.arguments.dropFirst()
