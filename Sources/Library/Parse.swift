@@ -2,22 +2,34 @@ public func parse(_ lines: [String]) throws -> [Abolisher] {
 	try lines.map(parseLine)
 }
 
+let linePrefix = "Abolish "
+let linePrefixLength = linePrefix.count
+
 func parseLine(_ line: String) throws -> Abolisher {
-	guard line.hasPrefix("Abolish ") else {
+	guard line.hasPrefix(linePrefix) else {
 		return Abolisher(input: line, type: .line)
 	}
 
-	let parts = line.split(separator: " ")
-
-	guard parts.count >= 3 else { throw Abolisher.Error.replaceMissing(line: line) }
+	guard let (pattern, replace) = getParts(of: line) else { throw Abolisher.Error.replaceMissing(line: line) }
 
 	return Abolisher(
 		input: line,
 		type: .abolish(
-			pattern: parsePart(parts[1]),
-			replace: parsePart(parts[2])
+			pattern: parsePart(pattern),
+			replace: parsePart(replace)
 		)
 	)
+}
+
+func getParts(of line: String) -> (pattern: Substring, replace: Substring)? {
+	let line = line.dropFirst(linePrefixLength).drop { $0 == " " } // Drop 'Abolish *'
+
+	guard let patternEnd = line.firstIndex(of: " ") else { return nil }
+	let pattern = line[..<patternEnd]
+
+	guard let replaceStart = line[patternEnd...].firstIndex(where: { $0 != " " }) else { return nil }
+
+	return (pattern, line[replaceStart...])
 }
 
 func parsePart(_ part: Substring) -> Abolisher.Part {

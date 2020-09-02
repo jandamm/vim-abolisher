@@ -122,7 +122,7 @@ final class AbolisherTests: XCTestCase {
 		let input = "Abolish some "
 		do {
 			_ = try parseLine(input)
-			XCTFail("Should not be parsed")
+			XCTFail("Should not be parsed successfully")
 		} catch let Abolisher.Error.replaceMissing(line) {
 			XCTAssertEqual(line, input)
 		} catch {
@@ -130,11 +130,11 @@ final class AbolisherTests: XCTestCase {
 		}
 	}
 
-	func testTextAfterReplace() throws {
-		let input = "Abolish some else more stuff"
+	func testReplaceWithSpaces() throws {
+		let input = "Abolish some else more stuff "
 		XCTAssertEqual(
 			try parseLine(input),
-			Abolisher(input: input, type: .abolish(pattern: .part("some", next: nil), replace: .part("else", next: nil)))
+			Abolisher(input: input, type: .abolish(pattern: .part("some", next: nil), replace: .part("else more stuff ", next: nil)))
 		)
 	}
 
@@ -250,7 +250,7 @@ final class AbolisherTests: XCTestCase {
 		("testCorrectPattern", testCorrectPattern),
 		("testNoAbolishLine", testNoAbolishLine),
 		("testMissingReplace", testMissingReplace),
-		("testTextAfterReplace", testTextAfterReplace),
+		("testReplaceWithSpaces", testReplaceWithSpaces),
 		("testMismatchingOptions", testMismatchingOptions),
 		("testMismatchingOptionCount", testMismatchingOptionCount),
 		("testEmptyPatternOption", testEmptyPatternOption),
